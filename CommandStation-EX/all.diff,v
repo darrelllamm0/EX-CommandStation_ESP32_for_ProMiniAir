@@ -1,0 +1,583 @@
+head	1.2;
+access;
+symbols;
+locks
+	user:1.2; strict;
+comment	@# @;
+
+
+1.2
+date	2024.01.26.00.09.13;	author user;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2023.08.09.19.37.04;	author user;	state Exp;
+branches;
+next	;
+
+
+desc
+@Diffs from original distro in ~/Download/CommandStation-EX
+@
+
+
+1.2
+log
+@Update to 5.0.7
+@
+text
+@CONTRIBUTING.md::
+CommandDistributor.cpp::
+CommandDistributor.h::
+CommandStation-EX.ino::
+69,77d68
+< // DRL: Begin
+< #if defined(INSERT_NMRADCC)
+< #include <NmraDcc.h>
+< #define DCC_PIN    23
+< NmraDcc Dcc;
+< #endif
+< // DRL: End
+< 
+< 
+140,149d130
+< 
+< // DRL: Begin
+< #if defined(INSERT_NMRADCC)
+<   Dcc.pin(DCC_PIN, 1);
+<   // Call the main DCC Init function to enable the DCC Receiver
+<   Dcc.init(MAN_ID_DIY, 100,   FLAGS_DCC_ACCESSORY_DECODER, 0);
+< #endif
+< // DRL: End
+< 
+< 
+154,159d134
+< // DRL: Begin
+< #if defined(INSERT_NMRADCC)
+<   Dcc.process();  // The DCC library does it all with the callback notifyDccMsg!
+< #endif
+< // DRL: End
+< 
+DCC.cpp::
+26,53d25
+< // DRL: Begin
+< #include "DRLDefines.h"
+< 
+< #if defined(INSERT_NMRADCC)
+< #pragma message "Inserting external DCC messages"
+< #include <NmraDcc.h>
+< volatile DCC_MSG msg[MSG_MAX] = {
+<   { 3, 20, { 0xFF, 0, 0xFF, 0, 0, 0}},
+<   { 3, 20, { 0xFF, 0, 0xFF, 0, 0, 0}},
+<   { 3, 20, { 0xFF, 0, 0xFF, 0, 0, 0}},
+<   { 3, 20, { 0xFF, 0, 0xFF, 0, 0, 0}},
+<   { 3, 20, { 0xFF, 0, 0xFF, 0, 0, 0}},
+<   { 3, 20, { 0xFF, 0, 0xFF, 0, 0, 0}},
+<   { 3, 20, { 0xFF, 0, 0xFF, 0, 0, 0}},
+<   { 3, 20, { 0xFF, 0, 0xFF, 0, 0, 0}},
+<   { 3, 20, { 0xFF, 0, 0xFF, 0, 0, 0}},
+<   { 3, 20, { 0xFF, 0, 0xFF, 0, 0, 0}},
+<   { 3, 20, { 0xFF, 0, 0xFF, 0, 0, 0}},
+<   { 3, 20, { 0xFF, 0, 0xFF, 0, 0, 0}},
+<   { 3, 20, { 0xFF, 0, 0xFF, 0, 0, 0}},
+<   { 3, 20, { 0xFF, 0, 0xFF, 0, 0, 0}},
+<   { 3, 20, { 0xFF, 0, 0xFF, 0, 0, 0}},
+<   { 3, 20, { 0xFF, 0, 0xFF, 0, 0, 0}},
+< };
+< volatile uint8_t msg_received = MSG_MAX-1;
+< volatile uint8_t msg_sent = MSG_MAX-1;
+< #endif
+< // DRL: End
+68,74d39
+< // DRL: Begin
+< #if defined(INSERT_IDLE)
+< #pragma message "Added inserting IDLE messages"
+< uint8_t insert_count = 0;
+< uint8_t insert_count_max = 9;
+< #endif
+< // DRL: End
+97,118d61
+< 
+< // DRL: Begin
+< #if defined(INSERT_NMRADCC)
+< #if defined(DEBUG)
+< void printMsgSerial(volatile uint8_t msg_num) {
+<   Serial.print("msg[");
+<   Serial.print(msg_num, HEX);
+<   Serial.print("]:\n");
+<   Serial.print(" Size: ");
+<   Serial.print(msg[msg_num].Size, HEX);
+<   Serial.print("\n");
+<   for (uint8_t i = 0; i < msg[msg_num].Size; i++) {
+<      Serial.print(" Data[");
+<      Serial.print(i, HEX);
+<      Serial.print("]: ");
+<      Serial.print(msg[msg_num].Data[i], HEX);
+<      Serial.print("\n");
+<   }
+< }
+< #endif
+< #endif
+< // DRL: End
+179,188d121
+< // DRL: Begin
+< #if defined(INSERT_IDLE)
+<   // DRL: Added
+<   insert_count = (insert_count+1)%insert_count_max;
+<   if (!insert_count) {
+<      DCCWaveform::mainTrack.schedulePacket(idlePacket, 2, 0); // DRL: Added!!!!
+<      // DIAG(F("setThrottle2: inserted IDLE: %x:%x:%x"),idlePacket[0], idlePacket[1], idlePacket[3]);
+<   }
+< #endif
+< // DRL: End
+203,212d135
+< // DRL: Begin
+< #if defined(INSERT_IDLE)
+<   // DRL: Added
+<   insert_count = (insert_count+1)%insert_count_max;
+<   if (!insert_count) {
+<      DCCWaveform::mainTrack.schedulePacket(idlePacket, 2, 0); // DRL: Added!!!!
+<      // DIAG(F("setFunctionInternal: inserted IDLE: %x:%x:%x"),idlePacket[0], idlePacket[1], idlePacket[3]);
+<   }
+< #endif
+< // DRL: End
+262,271d184
+< // DRL: Begin
+< #if defined(INSERT_IDLE)
+<   // DRL: Added
+<   insert_count = (insert_count+1)%insert_count_max;
+<   if (!insert_count) {
+<      DCCWaveform::mainTrack.schedulePacket(idlePacket, 2, 0); // DRL: Added!!!!
+<      // DIAG(F("setThrottle2 inserted IDLE: %x:%x:%x"),idlePacket[0], idlePacket[1], idlePacket[3]);
+<   }
+< #endif
+< // DRL: End
+819,833d731
+< 
+< // DRL: Begin
+< #if defined(INSERT_NMRADCC)
+< extern void notifyDccMsg(DCC_MSG *Msg) {
+<   if ((3 <= Msg->Size) && (Msg->Size <= 6)) {  // Check for a valid message
+<      msg_received = (msg_received+1) % MSG_MAX;
+<      memcpy((void *)&msg[msg_received], (void *)Msg, sizeof(DCC_MSG));
+<      DCCWaveform::mainTrack.schedulePacket((byte *)&msg[msg_received].Data[0], msg[msg_received].Size-1, 0); // Note the "-1"!
+< #if defined(DEBUG)
+<      printMsgSerial(msg_received);
+< #endif
+<   }
+< }  // End of notifyDccMsg
+< #endif
+< // DRL: End
+DCC.h::
+DCCACK.cpp::
+24,26d23
+< // DRL: Begin
+< #include "DRLDefines.h"
+< // DRL: End
+86,87d82
+< // DRL: Begin
+< #if ! defined(FAKE_ACK)
+93,94d87
+< #endif
+< // DRL: End
+155,167d147
+< // DRL: Begin
+< #if defined(FAKE_ACK)
+<       // Fake valid ack
+< #pragma message "Adding fake valid ack code"
+<       ackDetected=true;
+<       ackPending=false;
+<       DCCWaveform::progTrack.clearRepeats();  // shortcut remaining repeat packets 
+<       ackMaxCurrent=0;
+<       ackPulseDuration=0;
+<       numAckSamples=0;
+<       numAckGaps=0;
+< #endif
+< // DRL: End
+DCCACK.h::
+DCCEX.h::
+DCCEXParser.cpp::
+DCCEXParser.h::
+DCCRMT.cpp::
+DCCRMT.h::
+DCCTimer.h::
+DCCTimerAVR.cpp::
+DCCTimerESP.cpp::
+DCCTimerMEGAAVR.cpp::
+DCCTimerSAMD.cpp::
+DCCTimerSTM32.cpp::
+DCCTimerTEENSY.cpp::
+DCCWaveform.cpp::
+24,28d23
+< // DRL: Begin
+< #undef DEBUG
+< #include "DRLDefines.h"
+< // DRL: End
+< 
+47,48d41
+< // DRL:Begin
+< #if ! defined(ADD_IDLE_PACKET)
+50,51d42
+< #endif
+< // DRL:End
+292d282
+< 
+294d283
+< 
+DCCWaveform.h::
+24,26d23
+< // DRL: Begin
+< #include "DRLDefines.h"
+< // DRL: End
+42,46d38
+< // DRL: Begin
+< #if defined(ADD_IDLE_PACKET)
+< const byte idlePacket[] = {0xFF, 0x00, 0xFF};
+< #endif
+< // DRL: End
+DIAG.h::
+DRLdefines.h::
+diff: /Users/user/Downloads/CommandStation-EX/DRLdefines.h: No such file or directory
+Display.cpp::
+Display.h::
+DisplayInterface.cpp::
+DisplayInterface.h::
+Display_Implementation.h::
+EEStore.cpp::
+EEStore.h::
+EX-CommandStation-installer.exe::
+EXRAIL.h::
+EXRAIL2.cpp::
+EXRAIL2.h::
+EXRAIL2MacroReset.h::
+EXRAILMacros.h::
+EthernetInterface.cpp::
+EthernetInterface.h::
+FSH.h::
+GITHUB_SHA.h::
+I2CManager.cpp::
+I2CManager.h::
+I2CManager_AVR.h::
+I2CManager_Mega4809.h::
+I2CManager_NonBlocking.h::
+I2CManager_SAMD.h::
+I2CManager_STM32.h::
+I2CManager_Wire.h::
+IODevice.cpp::
+IODevice.h::
+IO_AnalogueInputs.h::
+IO_DCCAccessory.cpp::
+IO_DFPlayer.h::
+IO_EXFastclock.h::
+IO_EXIOExpander.h::
+IO_EXTurntable.h::
+IO_ExampleSerial.h::
+IO_GPIOBase.h::
+IO_HALDisplay.h::
+IO_HCSR04.h::
+IO_MCP23008.h::
+IO_MCP23017.h::
+IO_PCA9555.h::
+IO_PCA9685.cpp::
+IO_PCA9685pwm.h::
+IO_PCF8574.h::
+IO_PCF8575.h::
+IO_RotaryEncoder.h::
+IO_Servo.cpp::
+IO_Servo.h::
+IO_TouchKeypad.h::
+IO_VL53L0X.h::
+IO_duinoNodes.h::
+LCN.cpp::
+LCN.h::
+LICENSE::
+LiquidCrystal_I2C.cpp::
+LiquidCrystal_I2C.h::
+MotorDriver.cpp::
+MotorDriver.h::
+MotorDrivers.h::
+Outputs.cpp::
+Outputs.h::
+README.md::
+1c1
+< # What is DCC++ EX for the ProMiniAir Transmitter?
+---
+> # What is DCC++ EX?
+4,16c4
+< This is a local repository of DCC-EX.com's EX-CommandStation with modifications to accommodate connection to
+< the ProMiniAir Transmitter. These modifications include: 
+< * Adding more DCC idle messages to satisfy the CVP Airwire900 CONVRTR and G-3/4 wireless receivers
+< * Faking Service Mode ACKs to allow the ProMiniAir to send Service Mode commands without decoder acknowledgment
+< * Startup commands to activate the very nice "JOIN" capability to ensure Service Mode and normal DCC commands can be sent
+<   to the ProMiniAir Transmitter
+< * Added a ProMiniAir "motor" driver so that 5V DCC logic can be sent to the ProMiniAir Transmitter
+< 
+< The description below is from the original repository (with some typo corrections).
+< 
+< DCC++ EX is the organization maintaining several codebases that together represent a fully open-source DCC system. Currently, this includes the following:
+< 
+< * [CommandStation-EX](https://github.com/DCC-EX/CommandStation-EX/releases) - the latest take on the DCC++ command station for controlling your trains. Runs on an Arduino board and includes advanced features such as a WiThrottle server implementation, turnout operation, general purpose inputs and outputs (I/O), and JMRI integration.
+---
+> * [CommandStation-EX](https://github.com/DCC-EX/CommandStation-EX/releases) - the latest take on the DCC++ command station for controlling your trains. Runs on an Arduino board, and includes advanced features such as a WiThrottle server implementation, turnout operation, general purpose inputs and outputs (I/O), and JMRI integration.
+37c25
+< This repository, CommandStation-EX, contains a complete DCC++ EX Command Station sketch designed for compiling and uploading into an Arduino Uno, Mega, or Nano.
+---
+> This repository, CommandStation-EX, contains a complete DCC++ EX Commmand Station sketch designed for compiling and uploading into an Arduino Uno, Mega, or Nano.
+74c62
+< * High Accuracy Waveform option for rock steady DCC signals
+---
+> * High Accuracty Waveform option for rock steady DCC signals
+77c65
+< * New, simpler function control command
+---
+> * New, simpler, function control command
+Release - Architecture Doc::
+Release_Notes::
+RingStream.cpp::
+RingStream.h::
+SSD1306Ascii.cpp::
+SSD1306Ascii.h::
+Sensors.cpp::
+Sensors.h::
+SerialManager.cpp::
+SerialManager.h::
+StringBuffer.cpp::
+StringBuffer.h::
+StringFormatter.cpp::
+StringFormatter.h::
+TrackManager.cpp::
+TrackManager.h::
+Turnouts.cpp::
+Turnouts.h::
+WiThrottle.cpp::
+WiThrottle.h::
+WifiESP32.cpp::
+23,25d22
+< // DRL: Begin
+< #include "DRLdefines.h"
+< // DRL: End
+217,224d213
+< // DRL: Begin
+< #if defined(ADD_MSGS_EPS32)
+<       LCD(4,F("ADDR=%s"),WiFi.softAPIP().toString().c_str());  // ADDR
+<       LCD(5,F("PORT=%d"),port);  // PORT
+<       LCD(6,F("SSID=%s"),strSSID.c_str());  // SSID
+<       LCD(7,F("PASS=%s"),strPass.c_str());  // PASS
+< #endif
+< // DRL: End
+WifiESP32.h::
+WifiInboundHandler.cpp::
+WifiInboundHandler.h::
+WifiInterface.cpp::
+23,25d22
+< // DRL: Begin
+< #include "DRLDefines.h"
+< // DRL: End
+369,373c366
+< // DRL: Begin
+< #if defined(ADD_MSGS)
+<     LCD(4,F("ADDR=%s"),ipString);  // There is not enough room on some LCDs to put a title to this      
+< #endif
+< // DRL: End
+---
+>     LCD(4,F("%s"),ipString);  // There is not enough room on some LCDs to put a title to this      
+377,378d369
+< // DRL: Begin
+< #if defined(ADD_MSGS)
+380,384d370
+<   char macTail[]={macAddress[9],macAddress[10],macAddress[12],macAddress[13],macAddress[15],macAddress[16],'\0'};
+<   LCD(6,F("SSID=DCCEX_%s"),(const char *)macTail);
+<   LCD(7,F("PASSWD=PASS_%s"),(const char *)macTail);
+< #endif
+< // DRL: End
+WifiInterface.h::
+all.diff::
+diff: /Users/user/Downloads/CommandStation-EX/all.diff: No such file or directory
+all.diff,v::
+diff: /Users/user/Downloads/CommandStation-EX/all.diff,v: No such file or directory
+config.example.h::
+config.h::
+diff: /Users/user/Downloads/CommandStation-EX/config.h: No such file or directory
+defines.h::
+foo.diff::
+diff: /Users/user/Downloads/CommandStation-EX/foo.diff: No such file or directory
+install_via_powershell.cmd::
+installer.json::
+installer.ps1::
+installer.sh::
+libraries::
+diff: /Users/user/Downloads/CommandStation-EX/libraries: No such file or directory
+myAutomation.example.h::
+myEX-Turntable.example.h::
+myHal.cpp.txt::
+myHal.cpp_example.txt::
+mySetup.h::
+diff: /Users/user/Downloads/CommandStation-EX/mySetup.h: No such file or directory
+objdump.bat::
+objdump.sh::
+platformio.ini::
+release_notes.md::
+version.h::
+6,7c6
+< #define VERSION "5.0.8"
+< // 5.0.8  - Added ProMiniAir intefaces
+---
+> #define VERSION "5.0.7"
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d5 28
+d34 109
+a142 45
+25a26,28
+> // DRL: Begin
+> #include "DRLDefines.h"
+> // DRL: End
+39a43,49
+> // DRL: Begin
+> #if defined(INSERT_IDLE)
+> #pragma message "Added inserting IDLE messages"
+> uint8_t insert_count = 0;
+> uint8_t insert_count_max = 9;
+> #endif
+> // DRL: End
+121a132,141
+> // DRL: Begin
+> #if defined(INSERT_IDLE)
+>   // DRL: Added
+>   insert_count = (insert_count+1)%insert_count_max;
+>   if (!insert_count) {
+>      DCCWaveform::mainTrack.schedulePacket(idlePacket, 2, 0); // DRL: Added!!!!
+>      // DIAG(F("setThrottle2 inserted IDLE: %x:%x:%x"),idlePacket[0], idlePacket[1], idlePacket[3]);
+>   }
+> #endif
+> // DRL: End
+135a156,165
+> // DRL: Begin
+> #if defined(INSERT_IDLE)
+>   // DRL: Added
+>   insert_count = (insert_count+1)%insert_count_max;
+>   if (!insert_count) {
+>      DCCWaveform::mainTrack.schedulePacket(idlePacket, 2, 0); // DRL: Added!!!!
+>      // DIAG(F("setThrottle2 inserted IDLE: %x:%x:%x"),idlePacket[0], idlePacket[1], idlePacket[3]);
+>   }
+> #endif
+> // DRL: End
+184a215,224
+> // DRL: Begin
+> #if defined(INSERT_IDLE)
+>   // DRL: Added
+>   insert_count = (insert_count+1)%insert_count_max;
+>   if (!insert_count) {
+>      DCCWaveform::mainTrack.schedulePacket(idlePacket, 2, 0); // DRL: Added!!!!
+>      // DIAG(F("setThrottle2 inserted IDLE: %x:%x:%x"),idlePacket[0], idlePacket[1], idlePacket[3]);
+>   }
+> #endif
+> // DRL: End
+d145 24
+a168 24
+23a24,26
+> // DRL: Begin
+> #include "DRLDefines.h"
+> // DRL: End
+82a86,87
+> // DRL: Begin
+> #if ! defined(FAKE_ACK)
+87a93,94
+> #endif
+> // DRL: End
+147a155,167
+> // DRL: Begin
+> #if defined(FAKE_ACK)
+>       // Fake valid ack
+> #pragma message "Adding fake valid ack code"
+>       ackDetected=true;
+>       ackPending=false;
+>       DCCWaveform::progTrack.clearRepeats();  // shortcut remaining repeat packets 
+>       ackMaxCurrent=0;
+>       ackPulseDuration=0;
+>       numAckSamples=0;
+>       numAckGaps=0;
+> #endif
+> // DRL: End
+d183 16
+a198 10
+25a26,28
+> // DRL: Begin
+> #include "DRLDefines.h"
+> // DRL: End
+41a45,46
+> // DRL:Begin
+> #if ! defined(ADD_IDLE_PACKET)
+42a48,49
+> #endif
+> // DRL:End
+d200 10
+a209 10
+23a24,26
+> // DRL: Begin
+> #include "DRLDefines.h"
+> // DRL: End
+38a42,46
+> // DRL: Begin
+> #if defined(ADD_IDLE_PACKET)
+> const byte idlePacket[] = {0xFF, 0x00, 0xFF};
+> #endif
+> // DRL: End
+d212 1
+d274 32
+a307 2
+Only in /Users/user/Downloads/CommandStation-EX/Release_Notes: release_notes_v4.1.1.md
+Only in /Users/user/Downloads/CommandStation-EX/Release_Notes: release_notes_v4.1.2.md
+d327 13
+a339 13
+22a23,25
+> // DRL: Begin
+> #include "DRLdefines.h"
+> // DRL: End
+213a217,224
+> // DRL: Begin
+> #if defined(ADD_MSGS_EPS32)
+>       LCD(4,F("ADDR=%s"),WiFi.softAPIP().toString().c_str());  // ADDR
+>       LCD(5,F("PORT=%d"),port);  // PORT
+>       LCD(6,F("SSID=%s"),strSSID.c_str());  // SSID
+>       LCD(7,F("PASS=%s"),strPass.c_str());  // PASS
+> #endif
+> // DRL: End
+d344 10
+a353 6
+22a23,25
+> // DRL: Begin
+> #include "DRLDefines.h"
+> // DRL: End
+350c353,357
+<     LCD(4,F("%s"),ipString);  // There is not enough room on some LCDs to put a title to this      
+d355 10
+a364 14
+> // DRL: Begin
+> #if defined(ADD_MSGS)
+>     LCD(4,F("ADDR=%s"),ipString);  // There is not enough room on some LCDs to put a title to this      
+> #endif
+> // DRL: End
+353a361,362
+> // DRL: Begin
+> #if defined(ADD_MSGS)
+354a364,368
+>   char macTail[]={macAddress[9],macAddress[10],macAddress[12],macAddress[13],macAddress[15],macAddress[16],'\0'};
+>   LCD(6,F("SSID=DCCEX_%s"),(const char *)macTail);
+>   LCD(7,F("PASSWD=PASS_%s"),(const char *)macTail);
+> #endif
+> // DRL: End
+d366 4
+d372 1
+d375 1
+d380 2
+d387 1
+d393 5
+@

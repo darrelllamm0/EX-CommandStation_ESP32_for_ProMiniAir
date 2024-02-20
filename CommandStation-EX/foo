@@ -1,0 +1,95 @@
+CommandStation-EX.ino:#error CANNOT COMPILE - DCC++ EX ONLY WORKS WITH THE ARCHITECTURES LISTED IN defines.h
+DCCACK.cpp:          callback( LONG_ADDR_MARKER | ( ackManagerByte + ((ackManagerStash - 192) << 8)));
+DCCEXParser.cpp:  -, Remove from reminder table
+DCCEXParser.cpp:  @, Reserved for future use - LCD messages to JMRI
+DCCEXParser.cpp:  i, Reserved for future use - Turntable object broadcast
+DCCEXParser.cpp:  I, Reserved for future use - Turntable object command and control
+DCCEXParser.cpp:  k, Reserved for future use - Potentially Railcom
+DCCEXParser.cpp:  K, Reserved for future use - Potentially Railcom
+DCCEXParser.cpp:            if (hot != '-')
+DCCEXParser.cpp:              address=(p[0] - 1) / 4 + 1;
+DCCEXParser.cpp:              subaddress=(p[0] - 1)  % 4;
+DCCTimerAVR.cpp:  return __brkval ? &top - __brkval : &top - __malloc_heap_start;
+DCCTimerAVR.cpp:  uint8_t id = pin - A0;
+DCCTimerAVR.cpp:  uint8_t id = pin - A0;
+DCCTimerMEGAAVR.cpp:  return __brkval ? &top - __brkval : &top - __malloc_heap_start;
+DCCTimerSAMD.cpp:  uint8_t id = pin - A0;
+DCCTimerSAMD.cpp:  uint8_t id = pin - A0;
+DCCTimerSTM32.cpp:#error STM32 board selected is not yet explicitly supported - so Serial1 peripheral is not defined
+DCCTimerSTM32.cpp:#warning STM32 board selected not fully supported - only use ADC1 inputs 0-15 for current sensing!
+DCCTimerSTM32.cpp:  uint8_t id = pin - PNUM_ANALOG_BASE;
+DCCTimerSTM32.cpp:  uint8_t id = pin - PNUM_ANALOG_BASE;
+DCCTimerTEENSY.cpp:  unsigned dtcm = (unsigned)&_estack - DTCM_START;
+DCCTimerTEENSY.cpp:  unsigned stackinuse = (unsigned) &_estack -  (unsigned) __builtin_frame_address(0);
+DCCTimerTEENSY.cpp:  unsigned varsinuse = (unsigned)&_ebss - (unsigned)&_sdata;
+DCCTimerTEENSY.cpp:  unsigned freemem = dtcm - (stackinuse + varsinuse);
+Display.cpp:    if ((currentMillis - lastScrollTime) < DISPLAY_SCROLL_TIME)
+IODevice.cpp:  unsigned long halElapsed = diagMicros - currentMicros;
+IODevice.cpp:  unsigned long elapsed = diagMicros - lastMicros;
+IODevice.cpp:  if (currentMicros - lastOutputTime > 3000UL) {
+IODevice.cpp:  if (diagMicros - lastOutputTime > interval) {
+IO_DCCAccessory.cpp:  int packedAddress = _packedAddress + id - _firstVpin;
+IO_DCCAccessory.cpp:  int endAddress = _packedAddress + _nPins - 1;
+IO_PCA9685.cpp:  int8_t pin = vpin - _firstVpin;
+IO_PCA9685.cpp:  int pin = vpin - _firstVpin;
+IO_PCA9685.cpp:  int pin = vpin - _firstVpin;
+IO_PCA9685.cpp:  int pin = vpin - _firstVpin;
+MotorDriver.cpp:    unsigned long goodtime = micros() - lastBadSample;
+MotorDriver.cpp:    unsigned long mslpc = (commonFaultPin ? (micros() - globalOverloadStart) : microsSinceLastPowerChange(POWERMODE::OVERLOAD));
+RingStream.cpp:  else return _len - _pos_write + _pos_read-3;  
+SSD1306Ascii.cpp:  for (uint8_t r = 0; r <= m_displayHeight/8 - 1; r++) {
+SSD1306Ascii.cpp:  ch -= m_fontFirstChar;
+Sensors.cpp:  <Q ID>     - for transition of Sensor ID from HIGH state to LOW state (i.e. the sensor is triggered)
+Sensors.cpp:  <q ID>     - for transition of Sensor ID from LOW state to HIGH state (i.e. the sensor is no longer triggered)
+Sensors.cpp:    if (thisTime - lastReadCycle >= cycleInterval) {
+StringFormatter.cpp:      case '-': 
+WiThrottle.cpp:  if (Diag::WITHROTTLE) DIAG(F("%l WiThrottle(%d)<-[%e]"),millis(),clientid,cmd);
+WiThrottle.cpp:      else if (cmd[1]=='-') heartBeatEnable=false;
+WiThrottle.cpp:	  int addr = ((id - 1) / 4) + 1;
+WiThrottle.cpp:	  int subaddr = (id - 1) % 4;
+WiThrottle.cpp:  bool negate=cmd[0]=='-';
+WifiESP32.cpp:    return in - ('Z' - 'z');
+WifiInterface.cpp:	 && version[7] == '-' && version[8] == 'd' && version[9] == 'e' && version[10] == 'v')) {
+WifiInterface.cpp:  while ( millis() - startTime < timeout) {
+WifiInterface.cpp:          DIAG(F("Found in %dms"), millis() - startTime);
+EXRAILMacros.h:     case (__COUNTER__ - StringMacroTracker1) : {\
+EXRAILMacros.h:     case (__COUNTER__ - StringMacroTracker1) : {\
+EXRAILMacros.h:     case (__COUNTER__ - StringMacroTracker1) : {\
+EXRAILMacros.h:#define PRINT(msg) OPCODE_PRINT,V(__COUNTER__ - StringMacroTracker2),
+I2CManager_AVR.h:  unsigned long temp = ((F_CPU / i2cClockSpeed) - 16) / 2;
+I2CManager_Mega4809.h:  uint32_t baud = (F_CPU_CORRECTED / i2cClockSpeed - F_CPU_CORRECTED / 1000 / 1000
+I2CManager_NonBlocking.h:      unsigned long elapsed = micros() - startTime;
+I2CManager_SAMD.h:    if (micros() - startTime >= 500UL) break;
+I2CManager_STM32.h:    if (micros() - startTime >= 500UL) break;
+IODevice.h:    int pin = vpin - _firstVpin;
+IODevice.h:    int pin = vpin - _firstVpin;
+IO_AnalogueInputs.h:    int pin = vpin - _firstVpin;
+IO_DFPlayer.h:    if (_awaitingResponse && (int32_t)(currentMicros - _timeoutTime) > 0) {
+IO_DFPlayer.h:    if (((int32_t)currentMicros - _commandSendTime) > 100000) {
+IO_DFPlayer.h:      } else if ((int32_t)currentMicros - _commandSendTime > 1000000) {
+IO_DFPlayer.h:    int pin = vpin - _firstVpin;
+IO_DFPlayer.h:    uint8_t pin = vpin - _firstVpin;
+IO_EXFastclock.h:  DIAG(F("Clock check result - %d"), _checkforclock);
+IO_EXFastclock.h:    DIAG(F("FastCLock on I2C:%s - %S"), _I2CAddress.toString(),  (_deviceState==DEVSTATE_FAILED) ? F("OFFLINE") : F(""));
+IO_EXIOExpander.h:    int pin = vpin - _firstVpin;
+IO_EXIOExpander.h:    int pin = vpin - _firstVpin;
+IO_EXIOExpander.h:    int pin = vpin - _firstVpin;
+IO_EXIOExpander.h:    int pin = vpin - _firstVpin;
+IO_EXIOExpander.h:    int pin = vpin - _firstVpin;
+IO_EXIOExpander.h:    int pin = vpin - _firstVpin;
+IO_GPIOBase.h:  int pin = vpin - _firstVpin;
+IO_GPIOBase.h:  int pin = vpin - _firstVpin;
+IO_GPIOBase.h:  int pin = vpin - _firstVpin;
+IO_HCSR04.h:          waitTime = micros() - _startTime;
+IO_HCSR04.h:          waitTime = micros() - _startTime;
+IO_HCSR04.h:          uint32_t remainingTime = _maxTime - waitTime;
+IO_PCA9685pwm.h:    int pin = vpin - _firstVpin;
+IO_RotaryEncoder.h:    if (currentMicros - _lastPositionRead > _positionRefresh) {
+IO_Servo.h:    int8_t pin = vpin - _firstVpin;
+IO_Servo.h:    int pin = vpin - _firstVpin;
+IO_Servo.h:    int pin = vpin - _firstVpin;
+IO_Servo.h:    int pin = vpin - _firstVpin;
+IO_VL53L0X.h:    int pin = vpin - _firstVpin;
+IO_duinoNodes.h:    int pin=vpin - _firstVpin;
+IO_duinoNodes.h:    int pin = vpin - _firstVpin;
+MotorDriver.h:      unsigned long diff = now - lastPowerChange[(int)mode];
