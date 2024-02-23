@@ -23,7 +23,7 @@
 
 // Does not work to my
 // satisfaction
-#undef FORGETLOCO
+#define FORGETLOCO
 
 #undef DEBUG
 

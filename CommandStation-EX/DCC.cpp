@@ -51,6 +51,7 @@ volatile uint8_t msg_received = MSG_MAX-1;
 volatile uint8_t msg_sent = MSG_MAX-1;
 
 #if defined(FORGETLOCO)
+#pragma message "Activating forgetLoco when inserting external DCC"
 uint16_t TargetAddress_Last = 0;
 #endif
 
@@ -831,18 +832,18 @@ extern void notifyDccMsg(DCC_MSG *Msg) {
      DCCWaveform::mainTrack.schedulePacket((byte *)&msg[msg_received].Data[0], msg[msg_received].Size-1, 0); // Note the "-1"!
 #if defined(FORGETLOCO)
      // Detect long or short address
-     if (Msg->Data[0] != 0b11111111) {
+     if (msg[msg_received].Data[0] != 0b11111111) {
         uint16_t TargetAddress = 0;
-        uint8_t tmpuint8 = Msg->Data[0] & 0b11000000;
+        uint8_t tmpuint8 = msg[msg_received].Data[0] & 0b11000000;
         if (tmpuint8 == 0b11000000) {
-           TargetAddress = ((uint16_t)Msg->Data[0]-192)*256+(uint16_t)Msg->Data[1];
+           TargetAddress = ((uint16_t)msg[msg_received].Data[0]-192)*256+(uint16_t)msg[msg_received].Data[1];
            if (TargetAddress != TargetAddress_Last) {
               DCC::forgetLoco(TargetAddress);
               TargetAddress_Last = TargetAddress;
            }
         } else {
            if (tmpuint8 != 0b10000000) {
-              TargetAddress = (uint16_t)Msg->Data[0];
+              TargetAddress = (uint16_t)msg[msg_received].Data[0];
               if (TargetAddress != TargetAddress_Last) {
                  DCC::forgetLoco(TargetAddress);
                  TargetAddress_Last = TargetAddress;
