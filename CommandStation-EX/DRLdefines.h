@@ -21,8 +21,7 @@
 #define MSG_MAX 16
 #endif
 
-// Does not work to my
-// satisfaction
+// Works OK, based on limited testing
 #define FORGETLOCO
 
 #undef DEBUG

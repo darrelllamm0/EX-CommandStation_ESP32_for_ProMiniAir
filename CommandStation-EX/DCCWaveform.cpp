@@ -21,10 +21,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with CommandStation.  If not, see <https://www.gnu.org/licenses/>.
  */
-// DRL: Begin
-#undef DEBUG
-#include "DRLDefines.h"
-// DRL: End
 
 #ifndef ARDUINO_ARCH_ESP32
   // This code is replaced entirely on an ESP32
@@ -44,11 +40,7 @@ DCCWaveform  DCCWaveform::progTrack(PREAMBLE_BITS_PROG, false);
 // This bitmask has 9 entries as each byte is trasmitted as a zero + 8 bits.
 const byte bitMask[] = {0x00, 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01};
 
-// DRL:Begin
-#if ! defined(ADD_IDLE_PACKET)
 const byte idlePacket[] = {0xFF, 0x00, 0xFF};
-#endif
-// DRL:End
 const byte resetPacket[] = {0x00, 0x00, 0x00};
 
 
