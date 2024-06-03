@@ -50,9 +50,11 @@ The configuration file for DCC-EX Command Station
 //
 // DRL: Begin
 #if !defined(ADD_DRIVER)
+// DRL: End
 #define MOTOR_SHIELD_TYPE STANDARD_MOTOR_SHIELD
 // Per Decker's recommendations (high accuracy waveforms for MEGA are pins 11, 12, and 13)
 // This motor shield is for the PMA Tx
+// DRL: Begin
 #else
 #if defined(ARDUINO_ARCH_ESP32)
 #pragma message "Using ESP32 MotorDriver"

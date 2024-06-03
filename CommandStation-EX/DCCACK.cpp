@@ -85,11 +85,13 @@ void  DCCACK::Setup(int cv, byte byteValueOrBitnum, ackOp const program[], ACK_C
   }
 // DRL: Begin
 #if ! defined(FAKE_ACK)
+// DRL: End
   if (!progDriver->canMeasureCurrent()) {
     TrackManager::setJoin(ackManagerRejoin);
     callback(-2); // our prog track cant measure current
     return;
   }
+// DRL: Begin
 #endif
 // DRL: End
 

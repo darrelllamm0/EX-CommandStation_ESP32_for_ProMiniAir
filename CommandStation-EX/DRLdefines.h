@@ -3,10 +3,13 @@
 #define DRL_DEFINES_H
 
 #undef INSERT_IDLE
+#if defined(INSERT_IDLE)
+#define ADD_IDLE_PACKET
+#endif
+
 #define FAKE_ACK
 
 #undef RESET_PREAMBLE_COUNT
-#define ADD_IDLE_PACKET
 // This may be a problem
 #define ADD_MSGS
 #define ADD_MSGS_EPS32
