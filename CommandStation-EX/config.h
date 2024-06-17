@@ -49,26 +49,60 @@ The configuration file for DCC-EX Command Station
 //   +-----------------------v
 //
 // DRL: Begin
+// {ADD_DRIVER
 #if !defined(ADD_DRIVER)
 // DRL: End
 #define MOTOR_SHIELD_TYPE STANDARD_MOTOR_SHIELD
 // Per Decker's recommendations (high accuracy waveforms for MEGA are pins 11, 12, and 13)
 // This motor shield is for the PMA Tx
 // DRL: Begin
+// } ADD_DRIVER
 #else
+// { ADD_DRIVER - not
+// { TRANSMITTER
+#if defined(TRANSMITTER)
 #if defined(ARDUINO_ARCH_ESP32)
-#pragma message "Using ESP32 MotorDriver"
+#pragma message "Using ESP32 Tx MotorDriver"
 #define PMA_TX F("PMA_Tx"), \
      new MotorDriver(25/* 3*/, 19/*12*/, UNUSED_PIN, UNUSED_PIN, UNUSED_PIN, 1.0, 1100, UNUSED_PIN), \
      new MotorDriver(23/*11*/, 18/*13*/, UNUSED_PIN, UNUSED_PIN, UNUSED_PIN, 1.0, 1100, UNUSED_PIN)
 #else
-#pragma message "Using AVR MotorDriver"
+#pragma message "Using AVR Tx MotorDriver"
 #define PMA_TX F("PMA_Tx"), \
      new MotorDriver(3,  12, UNUSED_PIN, UNUSED_PIN, UNUSED_PIN, 1.0, 1100, UNUSED_PIN), \
      new MotorDriver(11, 13, UNUSED_PIN, UNUSED_PIN, UNUSED_PIN, 1.0, 1100, UNUSED_PIN)
 #endif
 #define MOTOR_SHIELD_TYPE PMA_TX 
+#pragma message "Using MotorDriver PMA_Tx"
+// } TRANSMITTER
+#else
+// { TRANSMITTER - not
+#if defined(ARDUINO_ARCH_ESP32)
+#pragma message "Using ESP32 Rx MotorDriver"
+// EX 8874 based shield connected to a 3.3V system (like ESP32) and 12bit (4096) ADC
+// numbers are GPIO numbers. comments are UNO form factor shield pin numbers
+#define EX8874_SHIELD_RX   F("EX8874_Rx_ESP32"),\
+ new MotorDriver(26    /* 3*/, 19/*12*/, 22, 12/*12, 9*/, 35/*35, A2*/, 1.27, 50000, UNUSED_PIN/*-33, 36, A4*/), \
+ new MotorDriver(25/*23, 11*/, 18/*13*/, 21, 13/*13, 8*/, 34/*34, A3*/, 1.27, 50000, UNUSED_PIN/*-32, 39, A5*/)
+#define EXTB9053_SHIELD_RX F("EXTB9053_Rx_ESP32_1.27"),\
+ new MotorDriver(26    /* 3*/, 19/*12*/, 22, 12/*12, 9*/, 35/*35, A2*/, 1.27, 50000, UNUSED_PIN/*-33, 36, A4*/), \
+ new MotorDriver(25/*23, 11*/, 18/*13*/, 21, 13/*13, 8*/, 34/*34, A3*/, 1.27, 50000, UNUSED_PIN/*-32, 39, A5*/)
+#else
+#pragma message "Using AVR Rx MotorDriver"
+// EX 8874 based shield connected to a 5V system (like Arduino) and 10bit (1024) ADC
+#define EX8874_SHIELD_RX   F("EX8874_Rx_AVR"), \
+ new MotorDriver( 3, 12, UNUSED_PIN, 9, A0, 5.08, 5000, A4), \
+ new MotorDriver(11, 13, UNUSED_PIN, 8, A1, 5.08, 5000, A5)
+#define EXTB9053_SHIELD_RX F("EXTB9053_Rx_AVR"), \
+ new MotorDriver( 3, 12, UNUSED_PIN, 9, A0, 5.08, 5000, A4), \
+ new MotorDriver(11, 13, UNUSED_PIN, 8, A1, 5.08, 5000, A5)
 #endif
+#define MOTOR_SHIELD_TYPE EXTB9053_SHIELD_RX
+#pragma message "Using MotorDriver EXTSB_SHIELD_RX"
+#endif
+// } RECEIVR
+#endif
+// }ADD_DRIVER
 // DRL: End
 
 /////////////////////////////////////////////////////////////////////////////////////

@@ -838,14 +838,18 @@ extern void notifyDccMsg(DCC_MSG *Msg) {
         if (tmpuint8 == 0b11000000) {
            TargetAddress = ((uint16_t)msg[msg_received].Data[0]-192)*256+(uint16_t)msg[msg_received].Data[1];
            if (TargetAddress != TargetAddress_Last) {
-              DCC::forgetLoco(TargetAddress);
+              // We would use forgetLoco, but it sends an estop
+              int reg=DCC::lookupSpeedTable(TargetAddress, false);
+              if (reg>=0) DCC::speedTable[reg].loco=0;
               TargetAddress_Last = TargetAddress;
            }
         } else {
            if (tmpuint8 != 0b10000000) {
               TargetAddress = (uint16_t)msg[msg_received].Data[0];
               if (TargetAddress != TargetAddress_Last) {
-                 DCC::forgetLoco(TargetAddress);
+                 // We would use forgetLoco, but it sends an estop
+                 int reg=DCC::lookupSpeedTable(TargetAddress, false);
+                 if (reg>=0) DCC::speedTable[reg].loco=0;
                  TargetAddress_Last = TargetAddress;
               }
            }

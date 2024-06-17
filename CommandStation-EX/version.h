@@ -3,7 +3,7 @@
 
 #include "StringFormatter.h"
 
-#define VERSION "5.0.8"
+#define VERSION "5.0.8b"
 // 5.0.8  - Added ProMiniAir intefaces
 // 5.0.7  - Only flag 2.2.0.0-dev as broken, not 2.2.0.0
 // 5.0.6  - Bugfix lost TURNOUTL description
