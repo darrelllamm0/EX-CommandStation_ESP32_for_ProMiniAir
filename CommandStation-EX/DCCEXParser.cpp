@@ -250,7 +250,7 @@ int16_t DCCEXParser::splitValues(int16_t result[MAX_COMMAND_PARAMS], const byte 
 }
 
 #if defined(ADDSTARESET)
-byte DCCEXParser::splitString(byte *result[MAX_COMMAND_PARAMS], byte indices[MAX_COMMAND_PARAMS], byte *cmd)
+byte DCCEXParser::splitString(byte *result[MAX_COMMAND_PARAMS], byte *cmd)
 {
     byte isBlank = 0;
     byte parameterCount = 0;
@@ -265,10 +265,8 @@ byte DCCEXParser::splitString(byte *result[MAX_COMMAND_PARAMS], byte indices[MAX
     while((*remainingCmd != '\0') && (*remainingCmd != '>')) {
        if ((*remainingCmd == ' ') && (!isBlank)) {
           if(parameterCount>0) {
-            indices[parameterCount-1] = index;
             *remainingCmd = '\0';
-            DIAG(F("splitString index[%d]=%d\n"), parameterCount-1, indices[parameterCount-1]);
-            DIAG(F("splitString result[%d]=%s\n"), parameterCount-1, result[parameterCount-1]);
+            DIAG(F("splitString result[%d]=\"%s\"\n"), parameterCount-1, result[parameterCount-1]);
           }
           isBlank = 1;
        }
@@ -281,9 +279,8 @@ byte DCCEXParser::splitString(byte *result[MAX_COMMAND_PARAMS], byte indices[MAX
        index++;
     }
 
-    indices[parameterCount-1] = index;
-    DIAG(F("splitString index[%d]=%d\n"), parameterCount-1, indices[parameterCount-1]);
-    DIAG(F("splitString result[%d]=%s\n"), parameterCount-1, result[parameterCount-1]);
+    *remainingCmd = '\0';
+    DIAG(F("splitString result[%d]=\"%s\"\n"), parameterCount-1, result[parameterCount-1]);
     result[parameterCount] = (byte *)remainingCmd;
 
     DIAG(F("splitString parameterCount = %d\n"), parameterCount);
@@ -303,8 +300,7 @@ AT_COMMAND_CALLBACK DCCEXParser::atCommandCallback = 0;
 ATP_COMMAND_CALLBACK DCCEXParser::atpCommandCallback = 0;
 void ATPCallback(HardwareSerial * stream, byte *command) {
     byte *result[DCCEXParser::MAX_COMMAND_PARAMS];
-    byte indices[DCCEXParser::MAX_COMMAND_PARAMS];
-    byte parameterCount = DCCEXParser::splitString(result, indices, (byte *)command);
+    byte parameterCount = DCCEXParser::splitString(result, (byte *)command);
     // StringFormatter::send(stream, F("Calling ATPCallback with %S\n"), F(command));
     DIAG(F(" parameterCount = \"%d\""), parameterCount);
     DIAG(F(" wifi_ssid = \"%S\""), result[0]);
@@ -750,7 +746,8 @@ void DCCEXParser::parseOne(Print *stream, byte *com, RingStream * ringStream)
         StringFormatter::send(stream, F("<U com = %S>\n"), F(com));
         DIAG(F("<U com = %s>\n"), com);
         DCCEXParser::setAtpCommandCallback(ATPCallback);
-        if (atpCommandCallback && !ringStream) {
+        // if (atpCommandCallback && !ringStream) {
+        if (atpCommandCallback) {
           TrackManager::setPower(POWERMODE::OFF);
           atpCommandCallback((HardwareSerial *)stream,(byte *)com);
           return;
