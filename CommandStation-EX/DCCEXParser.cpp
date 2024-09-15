@@ -97,7 +97,10 @@ Once a new OPCODE is decided upon, update this list.
   z,
   Z, Output configuration/control
 */
-
+#include "DRLdefines.h"
+#if defined(ADDSTARESET)
+#include "WifiESP32.h"
+#endif
 #include "StringFormatter.h"
 #include "DCCEXParser.h"
 #include "DCC.h"
@@ -246,10 +249,70 @@ int16_t DCCEXParser::splitValues(int16_t result[MAX_COMMAND_PARAMS], const byte 
     return parameterCount;
 }
 
+#if defined(ADDSTARESET)
+byte DCCEXParser::splitString(byte *result[MAX_COMMAND_PARAMS], byte indices[MAX_COMMAND_PARAMS], byte *cmd)
+{
+    byte isBlank = 0;
+    byte parameterCount = 0;
+    byte index = -1;
+    byte *remainingCmd = cmd + 1; // skips the opcode
+
+    // clear all parameters in case not enough found
+    for (int16_t i = 0; i < MAX_COMMAND_PARAMS; i++)
+        result[i] = NULL;
+
+    isBlank = 0;
+    while((*remainingCmd != '\0') && (*remainingCmd != '>')) {
+       if ((*remainingCmd == ' ') && (!isBlank)) {
+          if(parameterCount>0) {
+            indices[parameterCount-1] = index;
+            *remainingCmd = '\0';
+            DIAG(F("splitString index[%d]=%d\n"), parameterCount-1, indices[parameterCount-1]);
+            DIAG(F("splitString result[%d]=%s\n"), parameterCount-1, result[parameterCount-1]);
+          }
+          isBlank = 1;
+       }
+       else if (isBlank) {
+          result[parameterCount] = (byte *)remainingCmd;
+          parameterCount++;
+          isBlank = 0;
+       }
+       remainingCmd++;
+       index++;
+    }
+
+    indices[parameterCount-1] = index;
+    DIAG(F("splitString index[%d]=%d\n"), parameterCount-1, indices[parameterCount-1]);
+    DIAG(F("splitString result[%d]=%s\n"), parameterCount-1, result[parameterCount-1]);
+    result[parameterCount] = (byte *)remainingCmd;
+
+    DIAG(F("splitString parameterCount = %d\n"), parameterCount);
+    return parameterCount;
+}
+#endif
+
 extern __attribute__((weak))  void myFilter(Print * stream, byte & opcode, byte & paramCount, int16_t p[]);
+#if ! defined(ADDSTARESET)
 FILTER_CALLBACK DCCEXParser::filterCallback = myFilter;
+#else
+FILTER_CALLBACK DCCEXParser::filterCallback = 0;
+#endif
 FILTER_CALLBACK DCCEXParser::filterRMFTCallback = 0;
 AT_COMMAND_CALLBACK DCCEXParser::atCommandCallback = 0;
+#if defined(ADDSTARESET)
+ATP_COMMAND_CALLBACK DCCEXParser::atpCommandCallback = 0;
+void ATPCallback(HardwareSerial * stream, byte *command) {
+    byte *result[DCCEXParser::MAX_COMMAND_PARAMS];
+    byte indices[DCCEXParser::MAX_COMMAND_PARAMS];
+    byte parameterCount = DCCEXParser::splitString(result, indices, (byte *)command);
+    // StringFormatter::send(stream, F("Calling ATPCallback with %S\n"), F(command));
+    DIAG(F(" parameterCount = \"%d\""), parameterCount);
+    DIAG(F(" wifi_ssid = \"%S\""), result[0]);
+    DIAG(F(" wifi_password = \"%S\""), result[1]);
+    DIAG(F(" hostname = \"%S\""), result[2]);
+    WifiESP::setup((const char *)result[0], (const char *)result[1], (const char *)result[2], 2560, 1, false);
+}
+#endif
 
 // deprecated
 void DCCEXParser::setFilter(FILTER_CALLBACK filter)
@@ -264,6 +327,12 @@ void DCCEXParser::setAtCommandCallback(AT_COMMAND_CALLBACK callback)
 {
     atCommandCallback = callback;
 }
+#if defined(ADDSTARESET)
+void DCCEXParser::setAtpCommandCallback(ATP_COMMAND_CALLBACK callback)
+{
+    atpCommandCallback = callback;
+}
+#endif
 
 // Parse an F() string 
 void DCCEXParser::parse(const FSH * cmd) {
@@ -670,11 +739,31 @@ void DCCEXParser::parseOne(Print *stream, byte *com, RingStream * ringStream)
     case '+': // Complex Wifi interface command (not usual parse)
         if (atCommandCallback && !ringStream) {
           TrackManager::setPower(POWERMODE::OFF);
-          atCommandCallback((HardwareSerial *)stream,com);
+          atCommandCallback((HardwareSerial *)stream,(byte *)com);
           return;
         }
         break;
 #endif 
+#if defined(ADDSTARESET)
+   case 'U': // Call ATPCallback to reset ssid and password
+       {
+        StringFormatter::send(stream, F("<U com = %S>\n"), F(com));
+        DIAG(F("<U com = %s>\n"), com);
+        DCCEXParser::setAtpCommandCallback(ATPCallback);
+        if (atpCommandCallback && !ringStream) {
+          TrackManager::setPower(POWERMODE::OFF);
+          atpCommandCallback((HardwareSerial *)stream,(byte *)com);
+          return;
+        }
+        else {
+          StringFormatter::send(stream, F("<U bad ATPCallback>\n"));
+          DIAG(F("Uh oh: Found U, but NOT calling ATPCallback..."));
+          return;
+        }
+        break;
+       }
+#endif 
+
 
     case 'J' : // throttle info access
         {
