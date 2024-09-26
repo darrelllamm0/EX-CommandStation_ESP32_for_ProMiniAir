@@ -57,14 +57,15 @@
 
 #undef DEBUG
 
-#undef USE_DISCONNECT 
+#define USE_DISCONNECT 
 #define ADDSTARESET
 #define USE_CONFIG
 #define REPEAT_TRY
 #undef QUERY_SERVICE
-#define USE_REMOVE_ALL
-#define USE_FREE
+#define USE_REMOVE_ALL_AND_FREE
+#define USE_INIT
 #define DELETE_SERVER
+#undef FULLY_CLEAR
 
 #endif
 // DRL: End

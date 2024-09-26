@@ -303,10 +303,15 @@ void ATPCallback(HardwareSerial * stream, byte *command) {
     byte parameterCount = DCCEXParser::splitString(result, (byte *)command);
     // StringFormatter::send(stream, F("Calling ATPCallback with %S\n"), F(command));
     DIAG(F(" parameterCount = \"%d\""), parameterCount);
-    DIAG(F(" wifi_ssid = \"%S\""), result[0]);
-    DIAG(F(" wifi_password = \"%S\""), result[1]);
-    DIAG(F(" hostname = \"%S\""), result[2]);
-    WifiESP::setup((const char *)result[0], (const char *)result[1], (const char *)result[2], 2560, 1, false);
+    if (parameterCount==3) {
+       DIAG(F(" wifi_ssid = \"%S\""), result[0]);
+       DIAG(F(" wifi_password = \"%S\""), result[1]);
+       DIAG(F(" hostname = \"%S\""), result[2]);
+       WifiESP::setup((const char *)result[0], (const char *)result[1], (const char *)result[2], 2560, 1, false);
+    }
+    else {
+       WifiESP::setup("", "", "", 2560, 1, false);
+    }
 }
 #endif
 
