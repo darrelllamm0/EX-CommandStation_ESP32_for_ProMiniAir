@@ -21,16 +21,12 @@
  */
 #ifndef DCCEXParser_h
 #define DCCEXParser_h
-#include "DRLdefines.h"
 #include <Arduino.h>
 #include "FSH.h"
 #include "RingStream.h"
 
 typedef void (*FILTER_CALLBACK)(Print * stream, byte & opcode, byte & paramCount, int16_t p[]);
 typedef void (*AT_COMMAND_CALLBACK)(HardwareSerial * stream,const byte * command);
-#if defined(ADDSTARESET)
-typedef void (*ATP_COMMAND_CALLBACK)(HardwareSerial * stream, byte * command);
-#endif
 
 struct DCCEXParser
 {
@@ -42,10 +38,6 @@ struct DCCEXParser
    static void setRMFTFilter(FILTER_CALLBACK filter);
    static void setAtCommandCallback(AT_COMMAND_CALLBACK filter);
    static const int MAX_COMMAND_PARAMS=10;  // Must not exceed this
-#if defined(ADDSTARESET)
-   static void setAtpCommandCallback(ATP_COMMAND_CALLBACK filter);
-   static byte splitString( byte *result[MAX_COMMAND_PARAMS], byte indices[MAX_COMMAND_PARAMS], byte *command);
-#endif
  
    private:
   
@@ -79,9 +71,6 @@ struct DCCEXParser
     static FILTER_CALLBACK  filterCallback;
     static FILTER_CALLBACK  filterRMFTCallback;
     static AT_COMMAND_CALLBACK  atCommandCallback;
-#if defined(ADDSTARESET)
-    static ATP_COMMAND_CALLBACK  atpCommandCallback;
-#endif
     static bool funcmap(int16_t cab, byte value, byte fstart, byte fstop);
     static void sendFlashList(Print * stream,const int16_t flashList[]);
 

@@ -151,30 +151,8 @@ bool WifiESP::setup(const char *SSid,
     havePassword = false;
 
   if (haveSSID && havePassword && !forceAP) {
-#if ! defined(USE_CONFIG)
     WiFi.setHostname(hostname); // Strangely does not work unless we do it HERE!
     WiFi.mode(WIFI_STA);
-#else
-#pragma message "Adding WiFi.config"
-    WiFi.setHostname(hostname);
-    DIAG(F("WiFi.getHostname(): \"%s\""), WiFi.getHostname());
-    WiFi.mode(WIFI_STA);
-    if (!WiFi.config(INADDR_NONE, INADDR_NONE, INADDR_NONE, INADDR_NONE)) {
-       DIAG(F("Wifi setup failed to execute Wifi.config"));
-    }
-    else {
-       DIAG(F("Wifi setup executed Wifi.config"));
-    }
-#endif
-
-#if defined(USE_DISCONNECT)
-#pragma message "Adding WiFi.softAPdisconnect"
-  if (WiFi.softAPdisconnect (true)) // Turn off 
-    DIAG(F("Wifi setup executed Wifi.softAPdisconnect(true)"));
-  else
-    DIAG(F("Wifi setup failed to execute Wifi.softAPdisconnect(true)"));
-#endif
-
 #ifdef SERIAL_BT_COMMANDS
     WiFi.setSleep(true);
 #else
@@ -209,14 +187,6 @@ bool WifiESP::setup(const char *SSid,
 	haveSSID=false;
       }
     }
- // DRL: Begin
-#if defined(ADD_MSGS_EPS32)
-      LCD(4,F("ADDR=%s"),WiFi.localIP().toString().c_str());  // ADDR
-      LCD(5,F("PORT=%d"),port);      // PORT
-      LCD(6,F("SSID=%s"),SSid);      // SSID
-      LCD(7,F("HOST=%s"),hostname);  // HOSTNAME
-#endif
-// DRL: End 
   }
   if (!haveSSID || forceAP) {
     // prepare all strings
@@ -265,70 +235,15 @@ bool WifiESP::setup(const char *SSid,
     // no idea to go on
     return false;
   }
-#if defined(USE_REMOVE_ALL)
-#pragma message "Using mdns_service_remove_all"
-  if (mdns_service_remove_all()==ESP_OK)
-    DIAG(F("mdns_service_remove_all succeeded"));
-  else
-    DIAG(F("mdns_service_remove_all failed"));
-#endif
-#if defined(USE_FREE)
-#pragma message "Using mdns_free and mdns_init"
-  mdns_free();
-  if (mdns_init()==ESP_OK)
-    DIAG(F("mdns_init succeeded"));
-  else
-    DIAG(F("mdns_init failed"));
-#endif
+
   // Now Wifi is up, register the mDNS service
-#if defined(REPEAT_TRY)
-#pragma message "Added repeat tries"
-   tries=10;
-   while (!MDNS.begin(hostname) && tries) {
-	  Serial.print('.');
-	  tries--;
-	  delay(500);
-   }
-   if (!tries)
-    DIAG(F("Wifi setup failed to start mDNS"));
-   else 
-    DIAG(F("Wifi setup started mDNS"));
-#else
   if(!MDNS.begin(hostname)) {
     DIAG(F("Wifi setup failed to start mDNS"));
   }
-#endif
-#if defined(REPEAT_TRY)
-  tries=10;
-  while (!MDNS.addService("withrottle", "tcp", 2560) && tries) {
-	  Serial.print('.');
-	  tries--;
-	  delay(500);
-  }
-  if (!tries)
-   DIAG(F("Wifi setup failed to add withrottle tcp service to mDNS"));
-  else 
-   DIAG(F("Wifi setup added withrottle tcp service to mDNS"));
-#else
   if(!MDNS.addService("withrottle", "tcp", 2560)) {
     DIAG(F("Wifi setup failed to add withrottle service to mDNS"));
   }
-#endif
-#if defined(QUERY_SERVICE)
-#pragma message "Addeding MDNS.queryService"
-   int NumServices = MDNS.queryService("withrottle", "tcp");
-   DIAG(F("Number of withrottle tcp services: %d"), NumServices);
-#endif
 
-#if defined(DELETE_SERVER)
-#pragma message "Adding server stop, close, end"
-  if (server != NULL) {
-    server->stop();
-    server->close();
-    server->end();
-    DIAG(F("server stop, close, end"));
-  }
-#endif
   server = new WiFiServer(port); // start listening on tcp port
   server->begin();
   // server started here

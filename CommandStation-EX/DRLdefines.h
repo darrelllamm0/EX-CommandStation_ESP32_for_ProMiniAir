@@ -57,14 +57,5 @@
 
 #undef DEBUG
 
-#undef USE_DISCONNECT 
-#define ADDSTARESET
-#define USE_CONFIG
-#define REPEAT_TRY
-#undef QUERY_SERVICE
-#define USE_REMOVE_ALL
-#define USE_FREE
-#define DELETE_SERVER
-
 #endif
 // DRL: End
