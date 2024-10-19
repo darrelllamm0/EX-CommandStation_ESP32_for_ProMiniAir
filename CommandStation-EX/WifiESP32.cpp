@@ -117,10 +117,6 @@ char asciitolower(char in) {
   return in;
 }
 
-#if defined(FULLY_CLEAR)
-const wifi_init_config_t wifi_config_default = WIFI_INIT_CONFIG_DEFAULT();
-#endif
-
 bool WifiESP::setup(const char *SSid,
                     const char *password,
                     const char *hostname,
@@ -141,43 +137,6 @@ bool WifiESP::setup(const char *SSid,
   //  disableCoreWDT(0);
 
   // clean start
-#if defined(FULLY_CLEAR)
-#pragma message "Added fully clearing the Wifi."
-esp_wifi_disconnect ();
-esp_wifi_stop ();
-esp_wifi_deinit ();
-esp_wifi_init(&wifi_config_default);
-esp_wifi_start();
-esp_wifi_connect();
-#endif
-#if defined(USE_REMOVE_ALL_AND_FREE)
-#pragma message "Using mdns_service_remove_all and mdns_free"
-  if (mdns_service_remove_all()==ESP_OK) {
-    DIAG(F("mdns_service_remove_all() succeeded"));
-  }
-  else
-    DIAG(F("mdns_service_remove_all() failed"));
-
-  mdns_free();
-#endif
-#if defined(USE_INIT)
-#pragma message "Using mdns_init"
-  if (mdns_init()==ESP_OK)
-    DIAG(F("mdns_init() succeeded"));
-  else
-    DIAG(F("mdns_init() failed"));
-#endif
-#if defined(USE_DISCONNECT)
-#pragma message "Adding WiFi.softAPdisconnect"
-  if (APmode) {
-     if (WiFi.softAPdisconnect (false)) // Turn off 
-       DIAG(F("Wifi.softAPdisconnect(false) suceeded"));
-     else
-       DIAG(F("Wifi.softAPdisconnect(false) failed"));
-  }
-#endif
-
-
   WiFi.mode(WIFI_STA);
   WiFi.disconnect(true);
   // differnet settings that did not improve for haba
@@ -197,7 +156,6 @@ esp_wifi_connect();
     WiFi.mode(WIFI_STA);
 #else
 #pragma message "Adding WiFi.config"
-    APmode = false;
     WiFi.setHostname(hostname);
     DIAG(F("WiFi.getHostname(): \"%s\""), WiFi.getHostname());
     WiFi.mode(WIFI_STA);
@@ -207,6 +165,14 @@ esp_wifi_connect();
     else {
        DIAG(F("Wifi setup executed Wifi.config"));
     }
+#endif
+
+#if defined(USE_DISCONNECT)
+#pragma message "Adding WiFi.softAPdisconnect"
+  if (WiFi.softAPdisconnect (true)) // Turn off 
+    DIAG(F("Wifi setup executed Wifi.softAPdisconnect(true)"));
+  else
+    DIAG(F("Wifi setup failed to execute Wifi.softAPdisconnect(true)"));
 #endif
 
 #ifdef SERIAL_BT_COMMANDS
@@ -299,6 +265,21 @@ esp_wifi_connect();
     // no idea to go on
     return false;
   }
+#if defined(USE_REMOVE_ALL)
+#pragma message "Using mdns_service_remove_all"
+  if (mdns_service_remove_all()==ESP_OK)
+    DIAG(F("mdns_service_remove_all succeeded"));
+  else
+    DIAG(F("mdns_service_remove_all failed"));
+#endif
+#if defined(USE_FREE)
+#pragma message "Using mdns_free and mdns_init"
+  mdns_free();
+  if (mdns_init()==ESP_OK)
+    DIAG(F("mdns_init succeeded"));
+  else
+    DIAG(F("mdns_init failed"));
+#endif
   // Now Wifi is up, register the mDNS service
 #if defined(REPEAT_TRY)
 #pragma message "Added repeat tries"
@@ -309,9 +290,9 @@ esp_wifi_connect();
 	  delay(500);
    }
    if (!tries)
-    DIAG(F("MDNS.begin(hostname) failed"));
+    DIAG(F("Wifi setup failed to start mDNS"));
    else 
-    DIAG(F("MDNS.begin(hostname) succeeded"));
+    DIAG(F("Wifi setup started mDNS"));
 #else
   if(!MDNS.begin(hostname)) {
     DIAG(F("Wifi setup failed to start mDNS"));
