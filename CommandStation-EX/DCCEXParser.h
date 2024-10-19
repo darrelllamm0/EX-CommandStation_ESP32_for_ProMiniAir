@@ -44,7 +44,7 @@ struct DCCEXParser
    static const int MAX_COMMAND_PARAMS=10;  // Must not exceed this
 #if defined(ADDSTARESET)
    static void setAtpCommandCallback(ATP_COMMAND_CALLBACK filter);
-   static byte splitString( byte *result[MAX_COMMAND_PARAMS], byte *command);
+   static byte splitString( byte *result[MAX_COMMAND_PARAMS], byte indices[MAX_COMMAND_PARAMS], byte *command);
 #endif
  
    private:
