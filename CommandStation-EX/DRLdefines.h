@@ -46,7 +46,7 @@
 
 #if defined(INSERT_NMRADCC)
    #define MSG_MAX 16
-   #pragma message "Weaving in raw DCC messages"
+   #pragma message "Weaaving in raw DCC messages"
 #endif
 
 // Works OK, based on limited testing
@@ -57,11 +57,8 @@
 
 #undef DEBUG
 
-#undef ADDSTARESET
-
-#if defined(ADDSTARESET)
-#pragma message "Adding STA reset features"
 #define USE_DISCONNECT 
+#define ADDSTARESET
 #define USE_CONFIG
 #define REPEAT_TRY
 #undef QUERY_SERVICE
@@ -69,9 +66,6 @@
 #define USE_INIT
 #define DELETE_SERVER
 #undef FULLY_CLEAR
-#else
-#pragma message "Not adding STA reset features"
-#endif
 
 #endif
 // DRL: End
