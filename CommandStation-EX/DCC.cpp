@@ -825,13 +825,16 @@ void DCC::displayCabList(Print * stream) {
 
 // DRL: Begin
 #if defined(INSERT_NMRADCC)
-extern void notifyDccMsg(DCC_MSG *Msg) {
+void notifyDccMsg(DCC_MSG *Msg) {
   if ((3 <= Msg->Size) && (Msg->Size <= 6)) {  // Check for a valid message
      msg_received = (msg_received+1) % MSG_MAX;
      memcpy((void *)&msg[msg_received], (void *)Msg, sizeof(DCC_MSG));
      DCCWaveform::mainTrack.schedulePacket((byte *)&msg[msg_received].Data[0], msg[msg_received].Size-1, 0); // Note the "-1"!
 #if defined(FORGETLOCO)
      // Detect long or short address
+#if defined(DEBUG)
+     bool forgetLoco = false;
+#endif
      if (msg[msg_received].Data[0] != 0b11111111) {
         uint16_t TargetAddress = 0;
         uint8_t tmpuint8 = msg[msg_received].Data[0] & 0b11000000;
@@ -842,6 +845,9 @@ extern void notifyDccMsg(DCC_MSG *Msg) {
               int reg=DCC::lookupSpeedTable(TargetAddress, false);
               if (reg>=0) DCC::speedTable[reg].loco=0;
               TargetAddress_Last = TargetAddress;
+#if defined(DEBUG)
+              forgetLoco = true;
+#endif
            }
         } else {
            if (tmpuint8 != 0b10000000) {
@@ -851,16 +857,21 @@ extern void notifyDccMsg(DCC_MSG *Msg) {
                  int reg=DCC::lookupSpeedTable(TargetAddress, false);
                  if (reg>=0) DCC::speedTable[reg].loco=0;
                  TargetAddress_Last = TargetAddress;
+#if defined(DEBUG)
+                 forgetLoco = true;
+#endif
               }
            }
         }
      }
 #endif
 #if defined(DEBUG)
-     printMsgSerial(msg_received);
-     Serial.print("DCC.forgetLoco(");
-     Serial.print(TargetAddress);
-     Serial.print(")\n");
+     if (forgetLoco) {
+        printMsgSerial(msg_received);
+        Serial.print("forgetLoco: ");
+        Serial.print(TargetAddress);
+        Serial.print("\n");
+     }
 #endif
   }
 }  // End of notifyDccMsg
