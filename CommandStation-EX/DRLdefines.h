@@ -46,7 +46,7 @@
 
 #if defined(INSERT_NMRADCC)
    #define MSG_MAX 16
-   #pragma message "Weaaving in raw DCC messages"
+   #pragma message "Weaving in raw DCC messages"
 #endif
 
 // Works OK, based on limited testing
