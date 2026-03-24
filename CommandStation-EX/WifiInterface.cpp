@@ -21,7 +21,7 @@
  *  along with CommandStation.  If not, see <https://www.gnu.org/licenses/>.
  */
 // DRL: Begin
-#include "DRLDefines.h"
+#include "DRLdefines.h"
 // DRL: End
 #ifndef ARDUINO_AVR_UNO_WIFI_REV2
 // This code is NOT compiled on a unoWifiRev2 processor which uses a different architecture 

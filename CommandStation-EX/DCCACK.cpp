@@ -22,7 +22,7 @@
  *  along with CommandStation.  If not, see <https://www.gnu.org/licenses/>.
  */
 // DRL: Begin
-#include "DRLDefines.h"
+#include "DRLdefines.h"
 // DRL: End
 #include "DCCACK.h"
 #include "DIAG.h"

@@ -24,7 +24,7 @@
  *  along with CommandStation.  If not, see <https://www.gnu.org/licenses/>.
  */
 // DRL: Begin
-#include "DRLDefines.h"
+#include "DRLdefines.h"
 
 #if defined(INSERT_NMRADCC)
 #pragma message "Inserting external DCC messages"

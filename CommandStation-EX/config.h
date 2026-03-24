@@ -21,7 +21,7 @@
  */
 
 // DRL: Begin
-#include "DRLDefines.h"
+#include "DRLdefines.h"
 // DRL: End
 
 /**********************************************************************
