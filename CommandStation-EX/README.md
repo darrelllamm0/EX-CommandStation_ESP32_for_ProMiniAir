@@ -1,19 +1,7 @@
-# What is DCC++ EX for the ProMiniAir Transmitter?
+# What is DCC++ EX?
 DCC++ EX is the organization maintaining several codebases that together represent a fully open source DCC system. Currently, this includes the following:
 
-This is a local repository of DCC-EX.com's EX-CommandStation with modifications to accommodate connection to
-the ProMiniAir Transmitter. These modifications include: 
-* Adding more DCC idle messages to satisfy the CVP Airwire900 CONVRTR and G-3/4 wireless receivers
-* Faking Service Mode ACKs to allow the ProMiniAir to send Service Mode commands without decoder acknowledgment
-* Startup commands to activate the very nice "JOIN" capability to ensure Service Mode and normal DCC commands can be sent
-  to the ProMiniAir Transmitter
-* Added a ProMiniAir "motor" driver so that 5V DCC logic can be sent to the ProMiniAir Transmitter
-
-The description below is from the original repository (with some typo corrections).
-
-DCC++ EX is the organization maintaining several codebases that together represent a fully open-source DCC system. Currently, this includes the following:
-
-* [CommandStation-EX](https://github.com/DCC-EX/CommandStation-EX/releases) - the latest take on the DCC++ command station for controlling your trains. Runs on an Arduino board and includes advanced features such as a WiThrottle server implementation, turnout operation, general purpose inputs and outputs (I/O), and JMRI integration.
+* [CommandStation-EX](https://github.com/DCC-EX/CommandStation-EX/releases) - the latest take on the DCC++ command station for controlling your trains. Runs on an Arduino board, and includes advanced features such as a WiThrottle server implementation, turnout operation, general purpose inputs and outputs (I/O), and JMRI integration.
 * [exWebThrottle](https://github.com/DCC-EX/exWebThrottle) - a simple web based controller for your DCC++ command station.
 * [BaseStation-installer](https://github.com/DCC-EX/BaseStation-Installer) - an installer executable that takes care of downloading and installing DCC++ firmware onto your hardware setup.
 * [BaseStation-Classic](https://github.com/DCC-EX/BaseStation-Classic) - the original DCC++ software, packaged in a stable release. No active development, bug fixes only.
@@ -34,7 +22,7 @@ Both CommandStation-EX and BaseStation-Classic support much of the NMRA Digital 
 
 # What’s in this Repository?
 
-This repository, CommandStation-EX, contains a complete DCC++ EX Command Station sketch designed for compiling and uploading into an Arduino Uno, Mega, or Nano.
+This repository, CommandStation-EX, contains a complete DCC++ EX Commmand Station sketch designed for compiling and uploading into an Arduino Uno, Mega, or Nano.
 
 To utilize this sketch, you can use the following: 
 
@@ -71,10 +59,10 @@ in config.h.
 * User Functions: Filter regular commands (like a turnout or output command) and pass it to your own function or accessory
 * Support for LCN (layout control nodes)
 * mySetup.h file that acts like an Autoexec.Bat command to send startup commands to the CS
-* High Accuracy Waveform option for rock steady DCC signals
+* High Accuracty Waveform option for rock steady DCC signals
 * New current response outputs current in mA, overlimit current, and maximum board capable current. Support for new current meter in JMRI
 * USB Browser based EX-WebThrottle
-* New, simpler function control command
+* New, simpler, function control command
 * Number of locos discovery command `<#>`
 * Emergency stop command <!>
 * Release cabs from memory command <-> all cabs, <- CAB> for just one loco address

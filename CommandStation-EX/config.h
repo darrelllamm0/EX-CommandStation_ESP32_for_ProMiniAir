@@ -84,9 +84,17 @@ The configuration file for DCC-EX Command Station
 #define EX8874_SHIELD_RX   F("EX8874_Rx_ESP32"),\
  new MotorDriver(26    /* 3*/, 19/*12*/, 22, 12/*12, 9*/, 35/*35, A2*/, 1.27, 50000, UNUSED_PIN/*-33, 36, A4*/), \
  new MotorDriver(25/*23, 11*/, 18/*13*/, 21, 13/*13, 8*/, 34/*34, A3*/, 1.27, 50000, UNUSED_PIN/*-32, 39, A5*/)
+#if 1
+#pragma message "Using default high sensitivity current sense for Track B, and 5000mA limits"
 #define EXTB9053_SHIELD_RX F("EXTB9053_Rx_ESP32_1.27"),\
- new MotorDriver(26    /* 3*/, 19/*12*/, 22, 12/*12, 9*/, 35/*35, A2*/, 1.27, 50000, UNUSED_PIN/*-33, 36, A4*/), \
- new MotorDriver(25/*23, 11*/, 18/*13*/, 21, 13/*13, 8*/, 34/*34, A3*/, 1.27, 50000, UNUSED_PIN/*-32, 39, A5*/)
+ new MotorDriver(26    /* 3*/, 19/*12*/, 22, 12/*12, 9*/, 35/*35, A2*/, 4.00, 5000, UNUSED_PIN/*-33, 36, A4*/), \
+ new MotorDriver(25/*23, 11*/, 18/*13*/, 21, 13/*13, 8*/, 34/*34, A3*/, 1.00, 5000, UNUSED_PIN/*-32, 39, A5*/)
+#else
+#pragma message "Using low sensitivity current sense for Track B"
+#define EXTB9053_SHIELD_RX F("EXTB9053_Rx_ESP32_1.27"),\
+ new MotorDriver(26    /* 3*/, 19/*12*/, 22, 12/*12, 9*/, 34/*34, A3*/, 1.00, 50000, UNUSED_PIN/*-33, 36, A4*/), \
+ new MotorDriver(25/*23, 11*/, 18/*13*/, 21, 13/*13, 8*/, 35/*35, A2*/, 4.00, 50000, UNUSED_PIN/*-32, 39, A5*/)
+#endif
 #else
 #pragma message "Using AVR Rx MotorDriver"
 // EX 8874 based shield connected to a 5V system (like Arduino) and 10bit (1024) ADC

@@ -27,12 +27,6 @@
 // Define symbol DIAG_LOOPTIMES to enable CS loop execution time to be reported
 //#define DIAG_LOOPTIMES
 
-// Define symbol IO_NO_HAL to reduce FLASH footprint when HAL features not required
-// The HAL is disabled by default on Nano and Uno platforms, because of limited flash space.
-#if defined(ARDUINO_AVR_NANO) || defined(ARDUINO_AVR_UNO) 
-#define IO_NO_HAL
-#endif
-
 // Define symbol IO_SWITCH_OFF_SERVO to set the PCA9685 output to 0 when an 
 // animation has completed.  This switches off the servo motor, preventing 
 // the continuous buzz sometimes found on servos, and reducing the 
@@ -134,9 +128,11 @@ public:
 
   // write invokes the IODevice instance's _write method.
   static void write(VPIN vpin, int value);
+  static void writeRange(VPIN vpin, int value,int count);
 
   // write invokes the IODevice instance's _writeAnalogue method (not applicable for digital outputs)
   static void writeAnalogue(VPIN vpin, int value, uint8_t profile=0, uint16_t duration=0);
+  static void writeAnalogueRange(VPIN vpin, int value, uint8_t profile, uint16_t duration, int count);
 
   // isBusy returns true if the device is currently in an animation of some sort, e.g. is changing
   //  the output over a period of time.
@@ -160,6 +156,9 @@ public:
   // exists checks whether there is a device owning the specified vpin
   static bool exists(VPIN vpin);
 
+  // getStatus returns the state of the device at the specified vpin
+  static uint8_t getStatus(VPIN vpin);
+
   // Enable shared interrupt on specified pin for GPIO extender modules.  The extender module
   // should pull down this pin when requesting a scan.  The pin may be shared by multiple modules.
   // Without the shared interrupt, input states are scanned periodically to detect changes on 
@@ -169,7 +168,8 @@ public:
   void setGPIOInterruptPin(int16_t pinNumber);
 
   // Method to check if pins will overlap before creating new device. 
-  static bool checkNoOverlap(VPIN firstPin, uint8_t nPins=1, I2CAddress i2cAddress=0);
+  static bool checkNoOverlap(VPIN firstPin, uint8_t nPins=1, 
+                  I2CAddress i2cAddress=0, bool silent=false);
 
   // Method used by IODevice filters to locate slave pins that may be overlayed by their own
   // pin range.  
@@ -179,10 +179,28 @@ public:
   virtual void _write(VPIN vpin, int value) {
     (void)vpin; (void)value;
   };
+ 
+ // Method to write new state (optionally implemented within device class)
+ // This will, by default just write to one vpin and return whet to do next.
+ // the real power comes where a single driver can update many vpins in one call.
+  virtual VPIN _writeRange(VPIN vpin, int value, int count) {
+    (void)count;
+    _write(vpin,value); 
+    return vpin+1; // try next vpin 
+  };
 
   // Method to write an 'analogue' value (optionally implemented within device class)
   virtual void _writeAnalogue(VPIN vpin, int value, uint8_t param1=0, uint16_t param2=0) {
     (void)vpin; (void)value; (void) param1; (void)param2;
+  };
+  
+  // Method to write an 'analogue' value to a VPIN range (optionally implemented within device class)
+  // This will, by default just write to one vpin and return whet to do next.
+  // the real power comes where a single driver can update many vpins in one call.
+  virtual VPIN _writeAnalogueRange(VPIN vpin, int value, uint8_t param1, uint16_t param2, int count) {
+    (void) count;
+    _writeAnalogue(vpin, value,  param1, param2);
+    return vpin+1; 
   };
 
   // Method to read digital pin state (optionally implemented within device class)
@@ -383,6 +401,7 @@ private:
   uint8_t *_pinInUse; 
 };
 
+#ifndef IO_NO_HAL
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 /*
  * IODevice subclass for EX-Turntable.
@@ -411,10 +430,14 @@ private:
   void _begin() override;
   void _loop(unsigned long currentMicros) override;
   int _read(VPIN vpin) override;
+  void _broadcastStatus (VPIN vpin, uint8_t status, uint8_t activity);
   void _writeAnalogue(VPIN vpin, int value, uint8_t activity, uint16_t duration) override;
   void _display() override;
   uint8_t _stepperStatus;
+  uint8_t _previousStatus;
+  uint8_t _currentActivity;
 };
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -540,8 +563,13 @@ protected:
 #include "IO_MCP23017.h"
 #include "IO_PCF8574.h"
 #include "IO_PCF8575.h"
+#include "IO_PCA9555.h"
 #include "IO_duinoNodes.h"
 #include "IO_EXIOExpander.h"
+#include "IO_trainbrains.h"
+#include "IO_EncoderThrottle.h"
+#include "IO_TCA8418.h"
+#include "IO_NeoPixel.h"
 
 
 #endif // iodevice_h

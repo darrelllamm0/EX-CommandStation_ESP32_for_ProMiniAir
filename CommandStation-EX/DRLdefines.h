@@ -2,8 +2,8 @@
 #ifndef DRL_DEFINES_H
 #define DRL_DEFINES_H
 
-#define TRANSMITTER
-// #define RECEIVER
+// #define TRANSMITTER
+#define RECEIVER
 #if defined(TRANSMITTER) && defined(RECEIVER)
    #error "ERROR: TRANSMITTER and RECEIVER are both defined"
 #endif
@@ -29,7 +29,6 @@
    #pragma message "NOT using FAKE_ACK"
 #endif
 
-#undef RESET_PREAMBLE_COUNT
 // This may be a problem
 #define ADD_MSGS
 #define ADD_MSGS_EPS32
@@ -38,9 +37,6 @@
 #define ADD_OLED
 
 #define ADD_JOIN
-#if defined(ADD_JOIN)
-   #pragma message "Joining Tracks"
-#endif
 
 #define INSERT_NMRADCC
 
@@ -56,6 +52,8 @@
 #endif
 
 #undef DEBUG
+
+#undef DEBUG_CURRENT
 
 #endif
 // DRL: End
